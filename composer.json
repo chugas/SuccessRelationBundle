@@ -1,0 +1,22 @@
+{
+  "name": "success/relation-bundle",
+  "type": "symfony-bundle",
+  "description": "Bundle to handle relations of type 'follow', 'follower' between two entities",
+  "keywords": ["Success", "Symfony Bundle", "Relation", "Follow", "Follower"],
+  "homepage": "https://github.com/chugas",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Gaston Caldeiro",
+      "email": "successlabsuy@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.2",
+    "symfony/framework-bundle": ">=2.1,<2.3-dev",
+  },
+  "autoload": {
+    "psr-0": { "Success\\RelationBundle": "" }
+  },
+  "target-dir": "Success/RelationBundle"
+}
