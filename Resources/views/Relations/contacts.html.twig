@@ -1,0 +1,29 @@
+{% spaceless %}
+
+{% if users %}
+
+<div>
+  <h3>Siguiendo</h3>
+  <ul>
+
+    {% for user in users %}
+      <li>
+        <a href="#"><span class="tag">{{ user }}</span></a>
+      </li>
+    {% endfor %}
+
+    <li>
+      {% if( is_granted('ROLE_USER') and app.user.id == owner.id) %}
+        <a href="{{ path('relation_my_list') }}"><span class="tag">ver mas</span></a>
+      {% else %}
+        <a href="{{ path('relation_list', {'id' : owner.id }) }}"><span class="tag">ver mas</span></a>      
+      {% endif %}
+    </li>
+
+  </ul>
+
+</div>
+
+{% endif %}
+
+{% endspaceless %}

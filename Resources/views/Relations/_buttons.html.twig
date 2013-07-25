@@ -1,0 +1,5 @@
+{% if not app.user | relation_exists(user) %}
+  <a href="{{ path('relation_add', { 'id': user.id }) }}" class="button-link" data-relation="add" data-load="true">
+    <i class="icon-user"></i> {{ 'user.anadir contacto' | trans }}
+  </a>
+{% endif %}

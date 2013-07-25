@@ -1,0 +1,18 @@
+parameters:
+    success_relation_manager: Success\RelationBundle\Manager\RelationManager    
+    success_relation_class: %relation.class%
+    success_relation_twig: Success\RelationBundle\Twig\Extension\RelationExtension
+
+services:
+    success.relation.entity_manager:
+        alias: doctrine.orm.default_entity_manager
+
+    success.relation.manager:
+        class: %success_relation_manager%
+        arguments: ['@success.relation.entity_manager', %success_relation_class%]
+
+    success.relation.twig:
+        class: %success_relation_twig%
+        arguments: ['@twig', '@success.relation.manager']
+        tags:
+            - { name: twig.extension }

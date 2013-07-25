@@ -1,0 +1,59 @@
+{% extends '::frontend.html.twig' %}
+
+<section>
+
+  <h1>{{ 'user.follow' | trans }}</h1>
+
+  <ul id="follow-container">
+
+    {% include 'RelationBundle:Relations/Pager:_pager.html.twig' with { 'users': users } %}
+
+  </ul>
+  
+  {% if haveToPaginate %}
+    {% include 'RelationBundle:Relations:Pager:_more.html.twig' with { 'container': 'follow-container', 'link': '/'~owner.id~'/relation_list_pager/', 'text': 'company.ver mas' | trans  } %}
+  {% endif %}
+
+</section>
+
+{% block javascripts %}
+  {{ parent() }}
+  <script type="text/javascript">
+    var _NUM_PAGE = 1;
+
+    function more(self){
+      _NUM_PAGE++;
+      var collectionContainer = $('#' + $(self).data('container'));
+      var _HREF = $(self).data('href');
+
+      $('#success-link-pager').hide();
+      $('#success-link-load').show();
+
+      $.ajax({
+        url: _HREF + _NUM_PAGE + '/',
+        cache: true,
+        success: function(json){
+          collectionContainer.append($(json.response));
+          if(json.haveToPaginate == '1'){
+            $('#success-link-pager').show();
+          }else{
+            $('#success-link-pager').hide();
+          }
+          $('#success-link-load').hide();
+        }
+      });
+      return false;
+    }
+
+    ;(function ( $ ) {
+        'use strict';
+
+        $(document).ready(function() {
+          $('a[data-pager-button="add"]').live('click', function (e) {
+            e.preventDefault();
+            return more(this);
+          });
+        });
+    })( jQuery );
+  </script>
+{% endblock %}

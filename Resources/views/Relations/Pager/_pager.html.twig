@@ -1,0 +1,13 @@
+{% spaceless %}
+  {% for user in users %}
+    <li>
+      <h5>{{ user }}</h5>
+
+      {% block buttons %}
+        {% if( is_granted('ROLE_USER') and app.user.id != user.id ) %}
+          {{ render(controller('RelationBundle:Relation:buttons', {'id' : user.id })) }}
+        {% endif %}
+      {% endblock %}
+    </li>
+  {% endfor %}
+{% endspaceless %}

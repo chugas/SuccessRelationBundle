@@ -1,0 +1,27 @@
+relation_add:
+    pattern: /{id}/add/
+    defaults: { _controller: RelationBundle:Relation:addContact }
+    requirements:
+        _method:  GET
+        
+relation_remove:
+    pattern: /{id}/remove/
+    defaults: { _controller: RelationBundle:Relation:removeContact }
+    requirements:
+        _method:  GET
+
+relation_my_list:
+    pattern: /list
+    defaults: { _controller: RelationBundle:Relation:myList }
+    requirements:
+        _method:  GET
+
+relation_list:
+    pattern: /{id}/list
+    defaults: { _controller: RelationBundle:Relation:list }
+    requirements:
+        _method:  GET
+
+relation_list_pager:
+  pattern: /{id}/request-contacts/{page}/
+  defaults: { _controller: RelationBundle:Relation:page }
