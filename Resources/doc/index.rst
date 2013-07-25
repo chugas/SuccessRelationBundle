@@ -73,3 +73,4 @@ Configure your application
 
 success_relation:
     class: Application\Success\UsuarioBundle\Entity\RelationUser
+  
