@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class RelationExtension extends Extension
+class SuccessRelationExtension extends Extension
 {
     /**
      * {@inheritDoc}
@@ -22,7 +22,7 @@ class RelationExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('relation.class', $config['class']);
+        $container->setParameter('success_relation.class', $config['class']);
             
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

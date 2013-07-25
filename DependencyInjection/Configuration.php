@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('relation');
+        $rootNode = $treeBuilder->root('success_relation');
 
         $rootNode
             ->addDefaultsIfNotSet()

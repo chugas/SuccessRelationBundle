@@ -1,6 +1,6 @@
 parameters:
     success_relation_manager: Success\RelationBundle\Manager\RelationManager    
-    success_relation_class: %relation.class%
+    success_relation_class: %success_relation.class%
     success_relation_twig: Success\RelationBundle\Twig\Extension\RelationExtension
 
 services:
