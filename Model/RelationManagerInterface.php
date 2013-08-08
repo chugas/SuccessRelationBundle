@@ -7,7 +7,7 @@ use Success\RelationBundle\Model\RelationInterface;
 /**
  * RelationManager interface.
  *
- * @author Cédric Dugat <ph3@slynett.com>
+ * @author Gaston Caldeiro <chugas488@gmail.com>
  */
 interface RelationManagerInterface
 {

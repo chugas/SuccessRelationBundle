@@ -1,11 +1,11 @@
 {% spaceless %}
-  {% for user in users %}
+  {% for entity in collection %}
     <li>
-      <h5>{{ user }}</h5>
+      <h5>{{ entity }}</h5>
 
       {% block buttons %}
-        {% if( is_granted('ROLE_USER') and app.user.id != user.id ) %}
-          {{ render(controller('RelationBundle:Relation:buttons', {'id' : user.id })) }}
+        {% if( is_granted('ROLE_USER') and app.user.id != entity.id ) %}
+          {{ render(controller('RelationBundle:Relation:buttons', {'id' : entity.id })) }}
         {% endif %}
       {% endblock %}
     </li>

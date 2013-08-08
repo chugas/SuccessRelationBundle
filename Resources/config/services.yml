@@ -9,7 +9,7 @@ services:
 
     success.relation.manager:
         class: %success_relation_manager%
-        arguments: ['@success.relation.entity_manager', %success_relation_class%]
+        arguments: ['@success.relation.entity_manager', %success_relation_class%, '@event_dispatcher']
 
     success.relation.twig:
         class: %success_relation_twig%

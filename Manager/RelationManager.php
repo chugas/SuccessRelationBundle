@@ -7,6 +7,9 @@ use Doctrine\ORM\EntityRepository;
 use Success\RelationBundle\Model\RelationInterface;
 use Success\RelationBundle\Model\RelationManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Success\RelationBundle\Event\RelationEvent;
+use Success\RelationBundle\Events;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /*
   // CREAR RELACION
@@ -24,7 +27,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * RelationManager.
  *
  * @uses RelationManagerInterface
- * @author Cédric Dugat <ph3@slynett.com>
+ * @author Gaston Caldeiro <chugas488@gmail.com>
  */
 class RelationManager implements RelationManagerInterface {
 
@@ -34,14 +37,16 @@ class RelationManager implements RelationManagerInterface {
   protected $em;
   protected $class;
   protected $relation;
+  protected $dispatcher;
 
   /**
    * @param EntityManager $em         Entity manager service
    * @param string        $repository Repository name
    */
-  public function __construct(EntityManager $em, $class) {
+  public function __construct(EntityManager $em, $class, EventDispatcherInterface $dispatcher) {
     $this->em = $em;
     $this->class = $class;
+    $this->dispatcher = $dispatcher;
   }
 
   /**
@@ -91,19 +96,22 @@ class RelationManager implements RelationManagerInterface {
    * {@inheritdoc}
    */
   public function addRelation(RelationInterface $relation) {
+    $event = new RelationEvent($relation);
+    $this->dispatcher->dispatch(Events::RELATION_PRE_PERSIST, $event);
+    
     $this->em->persist($relation);
     $this->em->flush();
-
-    // Notificar Evento de creacion
 
     return $relation;
   }
 
   public function removeRelation(RelationInterface $relation) {
+    // Notificar Evento de borrado
+    $event = new RelationEvent($relation);
+    $this->dispatcher->dispatch(Events::RELATION_PRE_REMOVE, $event);
+
     $this->em->remove($relation);
     $this->em->flush();
-
-    // Notificar Evento de borrado
 
     return true;
   }

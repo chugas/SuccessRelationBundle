@@ -10,7 +10,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 
 class RelationController extends Controller {
   
-  protected $haveToPaginate = false;
+  protected $pager = false;
   
   public function buttonsAction($id) {
     $user = $this->getEntityUser($id);
@@ -21,11 +21,11 @@ class RelationController extends Controller {
   public function addContactAction($id) {
     $userLogged = $this->getUser();
     if(is_null($userLogged)) {
-      throw new NotFoundHttpException('Usuario no encontrado 1.');
+      throw new NotFoundHttpException('Entity 1 no encontrada.');
     } else {
       $userContact = $this->getEntityUser($id);
       if (!is_object($userContact)) {
-        throw new NotFoundHttpException('Usuario no encontrado 2.');
+        throw new NotFoundHttpException('Entity 2 no encontrada.');
       }
     }
     
@@ -40,11 +40,11 @@ class RelationController extends Controller {
   public function removeContactAction($id) {
     $userLogged = $this->getUser();
     if(is_null($userLogged)) {
-      throw new NotFoundHttpException('Usuario no encontrado 1.');
+      throw new NotFoundHttpException('Entity 1 no encontrada.');
     } else {
       $userContact = $this->getEntityUser($id);
       if (!is_object($userContact)) {
-        throw new NotFoundHttpException('Usuario no encontrado 2.');
+        throw new NotFoundHttpException('Entity 2 no encontrada.');
       }
     }
     
@@ -60,11 +60,11 @@ class RelationController extends Controller {
     $owner = $this->getEntityUser($id);
     
     $manager = $this->container->get('success.relation.manager');
-    $users = $manager->getFollowings($owner, 5);
+    $collection = $manager->getFollowings($owner, 5);
 
     $response = $this->render('RelationBundle:Relations:contacts.html.twig', array(
         'owner' => $owner,
-        'users' => $users
+        'collection' => $collection
     ));
 
     return $response;
@@ -72,12 +72,13 @@ class RelationController extends Controller {
 
   public function myListAction() {
     $user = $this->getUser();
-    $users = $this->getPager($user);
+    $collection = $this->getPager($user);
 
     $response = $this->render('RelationBundle:Relations:list.html.twig', array(
         'owner' => $user, 
-        'users' => $users, 
-        'haveToPaginate' => $this->haveToPaginate
+        'collection' => $collection, 
+        'haveToPaginate' => $this->pager->hasNextPage(),
+        'page' => ($this->pager->hasNextPage() ? $this->pager->getNextPage() : 1)
     ));
     
     $response->setMaxAge(5 * 60);
@@ -86,12 +87,13 @@ class RelationController extends Controller {
   
   public function listAction($id) {
     $user = $this->getEntityUser($id);
-    $users = $this->getPager($user);
+    $collection = $this->getPager($user);
 
     $response = $this->render('RelationBundle:Relations:list.html.twig', array(
         'owner' => $user, 
-        'users' => $users, 
-        'haveToPaginate' => $this->haveToPaginate
+        'collection' => $collection, 
+        'haveToPaginate' => $this->pager->hasNextPage(),
+        'page' => ($this->pager->hasNextPage() ? $this->pager->getNextPage() : 1)
     ));
 
     $response->setMaxAge(5 * 60);
@@ -101,24 +103,30 @@ class RelationController extends Controller {
   
   public function pageAction($id, $page = 1) {
     $user = $this->getEntityUser($id);
-    $users = $this->getPager($user, $page);
+    $collection = $this->getPager($user, $page);
     
     if ($this->getRequest()->isXmlHttpRequest()) {
 
       $html = $this->renderView('RelationBundle:Relations/Pager:_pager.html.twig', array(
           'owner' => $user,
-          'users' => $users
+          'collection' => $collection
       ));
       
-      $data = array('responseCode' => 200, 'response' => $html, 'haveToPaginate' => $this->haveToPaginate);
+      $data = array(
+          'responseCode' => 200, 
+          'response' => $html, 
+          'haveToPaginate' => $this->pager->hasNextPage(),
+          'href' => $this->get('router')->generate('relation_list_pager', array('id' => $user->getId(), 'page' => ($this->pager->hasNextPage() ? $this->pager->getNextPage() : 1)))
+      );
       $response = new JsonResponse($data, 200);
 
     } else {
 
       $response = $this->render('RelationBundle:Relations:list.html.twig', array(
           'owner' => $user,
-          'users' => $users,
-          'haveToPaginate' => $this->haveToPaginate
+          'collection' => $collection,
+          'haveToPaginate' => $this->pager->hasNextPage(),
+          'page' => ($this->pager->hasNextPage() ? $this->pager->getNextPage() : 1)
       ));
 
     }
@@ -156,7 +164,7 @@ class RelationController extends Controller {
       $collection[$relation->getId()] = $relation->getEntity2();
     }
     
-    $this->haveToPaginate = $pager->hasNextPage();
+    $this->pager = $pager;
     
     return $collection;    
   }
