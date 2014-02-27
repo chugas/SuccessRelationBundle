@@ -49,7 +49,7 @@
         'use strict';
 
         $(document).ready(function() {
-          $('a[data-pager-button="add"]').live('click', function (e) {
+          $('a[data-pager-button="add"]').on('click', function (e) {
             e.preventDefault();
             return more(this);
           });

@@ -70,17 +70,17 @@ function relationRemove(self) {
     'use strict';
     
     $(document).ready(function() {
-      $('a[data-relation="add"]').live('click', function (e) {
+      $('a[data-relation="add"]').on('click', function (e) {
         e.preventDefault();
         return relationAdd(this);
       });
 
-      $('a[data-relation="remove"]').live('click', function (e) {
+      $('a[data-relation="remove"]').on('click', function (e) {
         e.preventDefault();
         return relationRemove(this);
       });
 
-      /*$('a[data-pager-button="add"]').live('click', function (e) {
+      /*$('a[data-pager-button="add"]').on('click', function (e) {
         e.preventDefault();
         return more(this);
       });*/
