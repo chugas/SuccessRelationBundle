@@ -23,7 +23,8 @@ class SuccessRelationExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('success_relation.class', $config['class']);
-            
+        $container->setParameter('success_relation.manager', $config['manager']);
+        
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

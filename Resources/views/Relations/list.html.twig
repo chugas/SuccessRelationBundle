@@ -1,5 +1,6 @@
 {% extends '::frontend.html.twig' %}
 
+{% block content %}
 <section>
 
   <h1>{{ 'user.follow' | trans }}</h1>
@@ -15,6 +16,7 @@
   {% endif %}
 
 </section>
+{% endblock %}
 
 {% block javascripts %}
   {{ parent() }}

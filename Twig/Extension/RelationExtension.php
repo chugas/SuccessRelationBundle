@@ -12,11 +12,6 @@ use Success\RelationBundle\Manager\RelationManager;
 class RelationExtension extends \Twig_Extension
 {
     /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
      * @var ManagerInterface
      */
     protected $manager;
@@ -24,12 +19,10 @@ class RelationExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param \Twig_Environment $twig    Twig service
      * @param Manager           $manager Manager service
      */
-    public function __construct(\Twig_Environment $twig, RelationManager $manager)
+    public function __construct(RelationManager $manager)
     {
-        $this->twig    = $twig;
         $this->manager = $manager;
     }
 

@@ -24,6 +24,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
               ->scalarNode('class')->isRequired()->end()
+              ->scalarNode('manager')->defaultValue('Success\RelationBundle\Manager\RelationManager')->end()
             ->end()
         ;
         

@@ -2,6 +2,7 @@
 
 namespace Success\RelationBundle\Manager;
 
+use Doctrine\ORM\Query;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Success\RelationBundle\Model\RelationInterface;
@@ -57,7 +58,7 @@ class RelationManager implements RelationManagerInterface {
   public function exists($entity1, $entity2) {
     $this->relation = $this->getRelation($entity1, $entity2);
 
-    return !is_null($this->relation);
+    return !empty($this->relation);
   }
 
   /**
@@ -120,17 +121,23 @@ class RelationManager implements RelationManagerInterface {
    * {@inheritdoc}
    */
   public function getRelation($entity1, $entity2) {
-    $q = $this->__getRepository()
+    $entity_1_id = (is_object($entity1) ? $entity1->getId() : $entity1);
+    $entity_2_id = (is_object($entity2) ? $entity2->getId() : $entity2);
+    
+    $qb = $this->__getRepository()
             ->createQueryBuilder('r')
-            ->where('r.entity1 = :entity1')
-            ->andWhere('r.entity2 = :entity2');
+            ->select('partial r.{id, name}')
+            ->where('IDENTITY(r.entity1) = :entity1')    
+            ->andWhere('IDENTITY(r.entity2) = :entity2');
 
-    $q->setParameters(array(
-        'entity1' => $entity1,
-        'entity2' => $entity2
+    $qb->setParameters(array(
+        'entity1' => $entity_1_id,
+        'entity2' => $entity_2_id
     ));
 
-    return $q->getQuery()->getOneOrNullResult();
+    $q = $qb->getQuery();
+
+    return $q->getArrayResult();
   }
 
   public function getFollowers($entity, $limit = null) {
@@ -150,7 +157,7 @@ class RelationManager implements RelationManagerInterface {
     return $collection;
   }
 
-  public function getFollowings($entity, $limit = null) {
+  public function getFollowings($entity, $limit = null, $hydration = Query::HYDRATE_OBJECT) {
     $q = $this->getFollowingsQuery($entity);
 
     if (!is_null($limit)) {
@@ -192,13 +199,29 @@ class RelationManager implements RelationManagerInterface {
 
     return $q->getQuery();
   }
+  
+  public function getStatusOf($user_from_id, $user_to_ids) {
+    $qb = $this->__getRepository()
+            ->createQueryBuilder('r')
+            ->select('partial r.{id, name}')
+            ->where('IDENTITY(r.entity1) = :entity1');
+
+    $qb->andWhere($qb->expr()->in('IDENTITY(r.entity2)', $user_to_ids));
+    $qb->setParameter('entity1', $user_from_id);
+
+    $q = $qb->getQuery();
+    
+    $q->useResultCache(true, 600, __METHOD__ . serialize($q->getParameters()));
+    $q->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true);
+    return $q->getArrayResult();
+  }
 
   /**
    * Get entity repository.
    *
    * @return EntityRepository
    */
-  private function __getRepository() {
+  protected function __getRepository() {
     return $this->em->getRepository($this->class);
   }
 

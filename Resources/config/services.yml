@@ -1,5 +1,5 @@
 parameters:
-    success_relation_manager: Success\RelationBundle\Manager\RelationManager    
+    success_relation_manager: %success_relation.manager%
     success_relation_class: %success_relation.class%
     success_relation_twig: Success\RelationBundle\Twig\Extension\RelationExtension
 
@@ -13,6 +13,6 @@ services:
 
     success.relation.twig:
         class: %success_relation_twig%
-        arguments: ['@twig', '@success.relation.manager']
+        arguments: ['@success.relation.manager']
         tags:
             - { name: twig.extension }
